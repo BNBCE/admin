@@ -1,0 +1,36 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>Student View</title>
+  <script src="firebase.js"></script>
+  <style>
+    body { font-family: Arial; background: #e0f7fa; padding: 20px; }
+    .course { background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <h2>📚 কোর্স তালিকা</h2>
+  <div id="courseList"></div>
+
+  <script>
+    const db = firebase.database();
+    db.ref("courses").on("value", snapshot => {
+      const data = snapshot.val();
+      const list = document.getElementById("courseList");
+      list.innerHTML = "";
+      for (let course in data) {
+        const div = document.createElement("div");
+        div.className = "course";
+        div.innerHTML = `<h3>${course}</h3>`;
+        for (let key in data[course].topics) {
+          const t = data[course].topics[key];
+          div.innerHTML += `<p>📌 ${t.name} - <a href="${t.video}" target="_blank">ভিডিও</a> | <a href="${t.pdf}" target="_blank">PDF</a></p>`;
+        }
+        list.appendChild(div);
+      }
+    });
+  </script>
+</body>
+</html>

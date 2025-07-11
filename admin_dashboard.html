@@ -1,0 +1,55 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <script src="firebase.js"></script>
+  <style>
+    body { font-family: Arial; background: #f0f0f0; padding: 20px; }
+    .container { background: white; padding: 20px; border-radius: 10px; width: 500px; margin: auto; }
+    input { width: 100%; margin-bottom: 10px; padding: 10px; }
+    button { padding: 10px; background: green; color: white; border: none; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📝 কোর্স ও টপিক যুক্ত করুন</h2>
+    <input type="text" id="course" placeholder="কোর্সের নাম">
+    <input type="text" id="topic" placeholder="টপিকের নাম">
+    <input type="text" id="video" placeholder="ভিডিও লিংক">
+    <input type="text" id="pdf" placeholder="PDF লিংক">
+    <button onclick="addTopic()">+ যোগ করুন</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    function addTopic() {
+      const course = document.getElementById("course").value;
+      const topic = document.getElementById("topic").value;
+      const video = document.getElementById("video").value;
+      const pdf = document.getElementById("pdf").value;
+
+      if (!course || !topic) {
+        alert("সব তথ্য দিন!");
+        return;
+      }
+
+      const db = firebase.database();
+      db.ref("courses/" + course + "/topics").push({
+        name: topic,
+        video: video,
+        pdf: pdf
+      }).then(() => {
+        document.getElementById("status").innerText = "✅ সফলভাবে সংরক্ষণ হয়েছে!";
+        document.getElementById("course").value = "";
+        document.getElementById("topic").value = "";
+        document.getElementById("video").value = "";
+        document.getElementById("pdf").value = "";
+      }).catch((error) => {
+        document.getElementById("status").innerText = "❌ ত্রুটি: " + error.message;
+      });
+    }
+  </script>
+</body>
+</html>
